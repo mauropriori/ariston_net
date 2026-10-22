@@ -1,5 +1,6 @@
 """Constants for the Ariston integration."""
 
+import datetime as dt
 import sys
 from collections.abc import Callable, Coroutine
 from dataclasses import dataclass
@@ -17,6 +18,7 @@ from homeassistant.components.sensor import (
 from homeassistant.components.switch import SwitchEntityDescription
 from homeassistant.const import UnitOfEnergy, UnitOfTemperature, UnitOfTime
 from homeassistant.helpers.entity import EntityCategory, EntityDescription
+from homeassistant.util import dt as dt_util
 
 from ariston_net_api.const import (
     ARISTON_BUS_ERRORS,
@@ -48,7 +50,7 @@ except ImportError:
 
     WaterHeaterEntityDescription = WaterHeaterEntityEntityDescription
 
-import datetime as dt
+from .energy_series import Period, consumption_kwh
 
 DOMAIN: Final[str] = "ariston_net"
 NAME: Final[str] = "Ariston NET"
@@ -150,6 +152,7 @@ class AristonSensorEntityDescription(
     get_native_unit_of_measurement: Callable[[Any], str] | None = None
     get_last_reset: Callable[[Any], dt.datetime] | None = None
     get_native_value: Callable[[Any], Any]
+    legacy_unique_id_name: str | None = None
 
 
 @dataclass(kw_only=True, frozen=True)
@@ -161,6 +164,17 @@ class AristonSelectEntityDescription(
     get_current_option: Callable[[Any], str]
     get_options: Callable[[Any], list[str]]
     select_option: Callable[[Any, str], Coroutine]
+
+
+
+def _energy_period_kwh(entity: Any, period: Period) -> float | None:
+    """Aggregate the raw Ariston consumption buckets for the local period."""
+    return consumption_kwh(
+        entity.device.consumptions_sequences,
+        ConsumptionType.DOMESTIC_HOT_WATER_TOTAL_ENERGY.value,
+        period,
+        dt_util.now(),
+    )
 
 
 ARISTON_CLIMATE_TYPES: list[AristonClimateEntityDescription] = [
@@ -391,8 +405,76 @@ ARISTON_SENSOR_TYPES: list[AristonSensorEntityDescription] = [
             ConsumptionType.DOMESTIC_HOT_WATER_TOTAL_ENERGY.name,
         ],
         coordinator=ENERGY_COORDINATOR,
-        get_native_value=lambda entity: entity.device.domestic_hot_water_total_energy_consumption,
-        get_last_reset=lambda entity: entity.device.consumption_sequence_last_changed_utc,
+        get_native_value=lambda entity: _energy_period_kwh(entity, "today"),
+        get_last_reset=lambda entity: dt_util.now().replace(
+            hour=0, minute=0, second=0, microsecond=0
+        ),
+    ),
+    # These period totals come from cloud reporting buckets, not a
+    # continuously increasing lifetime meter. Avoid HA cumulative statistics.
+    AristonSensorEntityDescription(
+        key="Domestic hot water energy today",
+        has_entity_name=True,
+        translation_key="dhw_energy_today",
+        legacy_unique_id_name=f"{NAME} domestic hot water energy today",
+        icon="mdi:lightning-bolt",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        device_features=[
+            DeviceFeatures.HAS_METERING,
+            ConsumptionType.DOMESTIC_HOT_WATER_TOTAL_ENERGY.name,
+        ],
+        coordinator=ENERGY_COORDINATOR,
+        get_native_value=lambda entity: _energy_period_kwh(entity, "today"),
+    ),
+    AristonSensorEntityDescription(
+        key="Domestic hot water energy current month",
+        has_entity_name=True,
+        translation_key="dhw_energy_current_month",
+        legacy_unique_id_name=f"{NAME} domestic hot water energy current month",
+        icon="mdi:lightning-bolt",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        device_features=[
+            DeviceFeatures.HAS_METERING,
+            ConsumptionType.DOMESTIC_HOT_WATER_TOTAL_ENERGY.name,
+        ],
+        coordinator=ENERGY_COORDINATOR,
+        get_native_value=lambda entity: _energy_period_kwh(entity, "current_month"),
+    ),
+    AristonSensorEntityDescription(
+        key="Domestic hot water energy previous month",
+        has_entity_name=True,
+        translation_key="dhw_energy_previous_month",
+        legacy_unique_id_name=f"{NAME} domestic hot water energy previous month",
+        icon="mdi:lightning-bolt",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        device_features=[
+            DeviceFeatures.HAS_METERING,
+            ConsumptionType.DOMESTIC_HOT_WATER_TOTAL_ENERGY.name,
+        ],
+        coordinator=ENERGY_COORDINATOR,
+        get_native_value=lambda entity: _energy_period_kwh(entity, "previous_month"),
+    ),
+    AristonSensorEntityDescription(
+        key="Domestic hot water energy current year",
+        has_entity_name=True,
+        translation_key="dhw_energy_current_year",
+        legacy_unique_id_name=f"{NAME} domestic hot water energy current year",
+        icon="mdi:lightning-bolt",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        device_features=[
+            DeviceFeatures.HAS_METERING,
+            ConsumptionType.DOMESTIC_HOT_WATER_TOTAL_ENERGY.name,
+        ],
+        coordinator=ENERGY_COORDINATOR,
+        get_native_value=lambda entity: _energy_period_kwh(entity, "current_year"),
     ),
     AristonSensorEntityDescription(
         key="Central heating gas consumption",

@@ -31,5 +31,21 @@
         "title": "Configura l'Ariston"
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "dhw_energy_today": {
+        "name": "Consum d'energia per aigua calenta sanitària avui"
+      },
+      "dhw_energy_current_month": {
+        "name": "Consum d'energia per aigua calenta sanitària aquest mes"
+      },
+      "dhw_energy_previous_month": {
+        "name": "Consum d'energia per aigua calenta sanitària el mes passat"
+      },
+      "dhw_energy_current_year": {
+        "name": "Consum d'energia per aigua calenta sanitària aquest any"
+      }
+    }
   }
 }

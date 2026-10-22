@@ -31,5 +31,21 @@
         "title": "Configurer Ariston"
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "dhw_energy_today": {
+        "name": "Consommation d'énergie pour l'eau chaude sanitaire aujourd'hui"
+      },
+      "dhw_energy_current_month": {
+        "name": "Consommation d'énergie pour l'eau chaude sanitaire ce mois-ci"
+      },
+      "dhw_energy_previous_month": {
+        "name": "Consommation d'énergie pour l'eau chaude sanitaire le mois dernier"
+      },
+      "dhw_energy_current_year": {
+        "name": "Consommation d'énergie pour l'eau chaude sanitaire cette année"
+      }
+    }
   }
 }

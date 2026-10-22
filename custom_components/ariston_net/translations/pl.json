@@ -31,5 +31,21 @@
         "title": "Konfiguruj Ariston"
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "dhw_energy_today": {
+        "name": "Zużycie energii CWU dzisiaj"
+      },
+      "dhw_energy_current_month": {
+        "name": "Zużycie energii CWU w bieżącym miesiącu"
+      },
+      "dhw_energy_previous_month": {
+        "name": "Zużycie energii CWU w poprzednim miesiącu"
+      },
+      "dhw_energy_current_year": {
+        "name": "Zużycie energii CWU w bieżącym roku"
+      }
+    }
   }
 }

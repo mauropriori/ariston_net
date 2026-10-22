@@ -82,8 +82,10 @@ class AristonEntity(CoordinatorEntity, ABC):
     @property
     def unique_id(self):
         """Return the unique id."""
+        # Translated display names must not change existing entity registry IDs.
+        name = getattr(self.entity_description, "legacy_unique_id_name", None) or self.name
         return (
-            f"{self.device.gateway}-{self.name}-{self.zone}"
+            f"{self.device.gateway}-{name}-{self.zone}"
             if self.zone
-            else f"{self.device.gateway}-{self.name}"
+            else f"{self.device.gateway}-{name}"
         )

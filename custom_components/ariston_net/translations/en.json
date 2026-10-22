@@ -35,5 +35,21 @@
         "title": "Configure Ariston NET"
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "dhw_energy_today": {
+        "name": "Domestic hot water energy today"
+      },
+      "dhw_energy_current_month": {
+        "name": "Domestic hot water energy this month"
+      },
+      "dhw_energy_previous_month": {
+        "name": "Domestic hot water energy previous month"
+      },
+      "dhw_energy_current_year": {
+        "name": "Domestic hot water energy this year"
+      }
+    }
   }
 }

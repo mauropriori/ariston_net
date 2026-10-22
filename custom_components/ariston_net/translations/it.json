@@ -35,5 +35,21 @@
         "title": "Configura Ariston NET"
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "dhw_energy_today": {
+        "name": "Consumo energetico per l'acqua calda sanitaria oggi"
+      },
+      "dhw_energy_current_month": {
+        "name": "Consumo energetico per l'acqua calda sanitaria questo mese"
+      },
+      "dhw_energy_previous_month": {
+        "name": "Consumo energetico per l'acqua calda sanitaria il mese scorso"
+      },
+      "dhw_energy_current_year": {
+        "name": "Consumo energetico per l'acqua calda sanitaria quest'anno"
+      }
+    }
   }
 }

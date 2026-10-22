@@ -31,5 +31,21 @@
         "title": "Configurar Ariston"
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "dhw_energy_today": {
+        "name": "Consumo de energia da água quente sanitária hoje"
+      },
+      "dhw_energy_current_month": {
+        "name": "Consumo de energia da água quente sanitária este mês"
+      },
+      "dhw_energy_previous_month": {
+        "name": "Consumo de energia da água quente sanitária no mês passado"
+      },
+      "dhw_energy_current_year": {
+        "name": "Consumo de energia da água quente sanitária este ano"
+      }
+    }
   }
 }
